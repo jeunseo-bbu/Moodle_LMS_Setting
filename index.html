@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moodle LMS \uc124\uc815 \ub3c4\uc6b0\ubbf8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;
+  --surface:#ffffff;
+  --surface2:#f2f1ee;
+  --border:#e4e2dc;
+  --border2:#d0cec7;
+  --text:#1a1916;
+  --text2:#6b6860;
+  --text3:#9c9a94;
+  --accent:#1a56db;
+  --accent-light:#eff4ff;
+  --accent-dark:#1e429f;
+  --green:#057a55;
+  --green-light:#def7ec;
+  --amber:#92400e;
+  --amber-light:#fef3c7;
+  --red:#9b1c1c;
+  --red-light:#fde8e8;
+  --radius:10px;
+  --radius-sm:6px;
+  --font:'Pretendard',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+/* Layout */
+.app{max-width:820px;margin:0 auto;width:100%;padding:20px 16px;flex:1;display:flex;flex-direction:column;gap:0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+
+/* Header */
+.header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--surface)}
+.logo{width:38px;height:38px;background:var(--accent);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo i{font-size:20px;color:#fff}
+.header-text h1{font-size:15px;font-weight:600;color:var(--text)}
+.header-text p{font-size:12px;color:var(--text2);margin-top:1px}
+.nav{display:flex;gap:4px;margin-left:auto;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px}
+.nav-btn{padding:5px 14px;border-radius:5px;font-size:12px;font-weight:500;border:none;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:5px;font-family:var(--font)}
+.nav-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.ver-tabs{display:flex;gap:4px;margin-left:10px}
+.ver-btn{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text2);transition:all .15s;font-family:var(--font)}
+.ver-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Chat */
+.chat-wrap{display:flex;flex-direction:column;height:560px}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.msgs::-webkit-scrollbar{width:4px}
+.msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.msg{display:flex;gap:10px}
+.msg.user{flex-direction:row-reverse}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:14px}
+.bot .avatar{background:var(--accent-light);color:var(--accent)}
+.user .avatar{background:var(--accent);color:#fff}
+.bubble{padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.65;max-width:85%}
+.bot .bubble{background:var(--surface2);border:1px solid var(--border);border-radius:4px 14px 14px 14px;color:var(--text)}
+.user .bubble{background:var(--accent);color:#fff;border-radius:14px 4px 14px 14px}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-top:8px;font-size:12.5px}
+.rtitle{font-weight:600;color:var(--text);margin-bottom:4px}
+.rpath{font-family:var(--mono);font-size:10.5px;color:var(--accent);background:var(--accent-light);padding:2px 6px;border-radius:4px;display:inline-block;margin-bottom:5px;word-break:break-all}
+.ropts{color:var(--text2);font-size:11.5px;line-height:1.55;white-space:pre-wrap;margin-top:3px}
+.rbadge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:500;margin-right:4px}
+.req-필수{background:var(--red-light);color:var(--red)}
+.req-선택{background:var(--amber-light);color:var(--amber)}
+.req-기능안내{background:var(--accent-light);color:var(--accent-dark)}
+.src-badge{display:inline-flex;align-items:center;gap:3px;margin-top:6px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.src-custom{background:var(--green-light);color:var(--green)}
+.src-ai{background:var(--accent-light);color:var(--accent-dark)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.chip{padding:5px 11px;border-radius:20px;font-size:11.5px;border:1px solid var(--border);cursor:pointer;color:var(--text2);background:var(--surface);font-family:var(--font);transition:all .15s}
+.chip:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.typing-wrap{display:flex;gap:4px;align-items:center;padding:11px 14px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.input-area{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:var(--surface)}
+.input-area textarea{flex:1;resize:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13.5px;font-family:var(--font);color:var(--text);background:var(--surface2);line-height:1.5;max-height:100px;outline:none;transition:border-color .15s}
+.input-area textarea:focus{border-color:var(--accent);background:var(--surface)}
+.send-btn{width:38px;height:38px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s;flex-shrink:0}
+.send-btn:hover{background:var(--accent-dark)}
+.send-btn:disabled{opacity:.4;cursor:default}
+
+/* Admin */
+.admin-wrap{display:flex;flex-direction:column;min-height:560px}
+.admin-toolbar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface2)}
+.admin-toolbar input,.admin-toolbar select{padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12.5px;font-family:var(--font);background:var(--surface);color:var(--text);outline:none;transition:border-color .15s}
+.admin-toolbar input{flex:1;min-width:160px}
+.admin-toolbar input:focus,.admin-toolbar select:focus{border-color:var(--accent)}
+.btn{padding:7px 13px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:500;border:1px solid var(--border);cursor:pointer;background:var(--surface);color:var(--text);font-family:var(--font);display:inline-flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--surface2);border-color:var(--border2)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-dark)}
+.btn.danger{color:var(--red);border-color:#fca5a5}
+.btn.danger:hover{background:var(--red-light)}
+.stat-row{padding:8px 16px;border-bottom:1px solid var(--border);display:flex;gap:16px;background:var(--surface);flex-wrap:wrap}
+.stat{font-size:11.5px;color:var(--text2)}
+.stat b{color:var(--text);font-weight:600}
+.list{padding:12px 16px;display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto}
+.list-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;display:flex;align-items:flex-start;gap:10px;background:var(--surface);transition:border-color .15s}
+.list-item:hover{border-color:var(--border2)}
+.li-body{flex:1;min-width:0}
+.li-meta{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap}
+.li-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px}
+.li-path{font-family:var(--mono);font-size:10.5px;color:var(--accent);background:var(--accent-light);padding:2px 6px;border-radius:4px;display:inline-block;word-break:break-all;margin-bottom:3px}
+.li-opts{font-size:11.5px;color:var(--text2);line-height:1.5;white-space:pre-wrap}
+.li-actions{display:flex;gap:4px;flex-shrink:0}
+.icon-btn{width:30px;height:30px;border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;background:transparent;color:var(--text2);font-size:15px;transition:all .15s}
+.icon-btn:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.icon-btn.del:hover{background:var(--red-light);color:var(--red);border-color:#fca5a5}
+.custom-tag{font-size:10px;background:var(--accent-light);color:var(--accent-dark);padding:1px 6px;border-radius:3px;font-weight:500}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-state i{font-size:40px;display:block;margin-bottom:10px;opacity:.3}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);width:460px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h2{font-size:15px;font-weight:600;color:var(--text)}
+.modal-body{padding:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.field input,.field select,.field textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface2);outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:var(--surface)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.55}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{padding:14px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;z-index:200;transform:translateY(20px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+footer{text-align:center;font-size:11.5px;color:var(--text3);padding:16px;margin-top:auto}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="card">
+    <div class="header">
+      <div class="logo"><i class="ti ti-school"></i></div>
+      <div class="header-text">
+        <h1>Moodle LMS \uc124\uc815 \ub3c4\uc6b0\ubbf8</h1>
+        <p>Coursemos LXP \ucee4\uc2a4\ud140 \uc124\uc815 + Moodle \uae30\ubcf8 \uae30\ub2a5 \uc548\ub0b4</p>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" id="tab-chat" onclick="switchTab('chat')">
+          <i class="ti ti-message-circle"></i> \ucc57\ubd07
+        </button>
+        <button class="nav-btn" id="tab-admin" onclick="switchTab('admin')">
+          <i class="ti ti-settings"></i> \uc124\uc815 \uad00\ub9ac
+        </button>
+      </nav>
+      <div class="ver-tabs" id="ver-tabs">
+        <button class="ver-btn active" onclick="setVer('4.5',this)">v4.5</button>
+        <button class="ver-btn" onclick="setVer('3.9',this)">v3.9</button>
+        <button class="ver-btn" onclick="setVer('all',this)">\uc804\uccb4</button>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-wrap" id="chat-panel">
+      <div class="msgs" id="msgs">
+        <div class="msg bot">
+          <div class="avatar"><i class="ti ti-robot"></i></div>
+          <div>
+            <div class="bubble">
+              \uc548\ub155\ud558\uc138\uc694! Moodle LMS \uc124\uc815 \ub3c4\uc6b0\ubbf8\uc785\ub2c8\ub2e4.<br>
+              \ubc84\uc804\uc744 \uc120\ud0dd\ud558\uace0 \uad81\uae08\ud55c \uc124\uc815\uc744 \ubb3c\uc5b4\ubcf4\uc138\uc694.<br>
+              <span style="font-size:11.5px;color:var(--text3)">\ucee4\uc2a4\ud140 \uc124\uc815 \ub370\uc774\ud130 + Moodle \uae30\ubcf8 \uc9c0\uc2dd \ud1b5\ud569 \ub2f5\ubcc0</span>
+            </div>
+            <div class="chips">
+              <button class="chip" onclick="ask('\ucd9c\uc11d\ubd80 \uc124\uc815 \ubc29\ubc95 \uc54c\ub824\uc918')">\ucd9c\uc11d\ubd80 \uc124\uc815</button>
+              <button class="chip" onclick="ask('\uc131\uc801\ubd80 \uc9d1\uacc4 \uc720\ud615 \uc124\uc815\uc740?')">\uc131\uc801\ubd80 \uc124\uc815</button>
+              <button class="chip" onclick="ask('\ub3d9\uc601\uc0c1 \uc790\ub9c9 \uae30\ub2a5 \ud65c\uc131\ud654 \ubc29\ubc95\uc740?')">\ub3d9\uc601\uc0c1 \uc124\uc815</button>
+              <button class="chip" onclick="ask('\uac15\uc88c \ud3ec\ub9f7 \uad00\ub9ac \uc5b4\ub5bb\uac8c \ud574?')">\uac15\uc88c \ud3ec\ub9f7</button>
+              <button class="chip" onclick="ask('3.9\uc640 4.5 \ubc84\uc804 \uc124\uc815 \ucc28\uc774 \uc54c\ub824\uc918')">\ubc84\uc804 \ucc28\uc774</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-area">
+        <textarea id="inp" rows="1" placeholder="\uc124\uc815 \uacbd\ub85c, \uc635\uc158, \ubc84\uc804 \ucc28\uc774 \ub4f1 \ubb3b\uc5b4\ubcf4\uc138\uc694..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sbtn" onclick="send()" aria-label="\uc804\uc1a1">
+          <i class="ti ti-send"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Admin -->
+    <div class="admin-wrap" id="admin-panel" style="display:none">
+      <div class="admin-toolbar">
+        <input type="text" id="srch" placeholder="\uc81c\ubaa9, \uce74\ud14c\uace0\ub9ac, \uacbd\ub85c\ub85c \uac80\uc0c9..." oninput="renderList()">
+        <select id="fver" onchange="renderList()">
+          <option value="all">\uc804\uccb4 \ubc84\uc804</option>
+          <option value="4.5">v4.5</option>
+          <option value="3.9">v3.9</option>
+        </select>
+        <select id="fcat" onchange="renderList()">
+          <option value="all">\uc804\uccb4 \ucee4\ud14c\uace0\ub9ac</option>
+        </select>
+        <button class="btn" onclick="exportCSV()"><i class="ti ti-download"></i> CSV \ub0b4\ubcf4\ub0b4\uae30</button>
+        <button class="btn primary" onclick="openModal()"><i class="ti ti-plus"></i> \ud56d\ubaa9 \ucd94\uac00</button>
+      </div>
+      <div class="stat-row" id="stat-row"></div>
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+
+  <footer>Coursemos LXP / Moodle \uad00\ub9ac\uc790 \uc124\uc815 \ub3c4\uc6b0\ubbf8 &middot; \ub370\uc774\ud130\ub294 \ube0c\ub77c\uc6b0\uc800\uc5d0 \uc800\uc7a5\ub429\ub2c8\ub2e4</footer>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-ttl">\uc124\uc815 \ud56d\ubaa9 \ucd94\uac00</h2>
+      <button class="icon-btn" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field">
+          <label>\ubc84\uc804</label>
+          <select id="f-v"><option value="4.5">v4.5</option><option value="3.9">v3.9</option></select>
+        </div>
+        <div class="field">
+          <label>\ud544\uc218 \uc5ec\ubd80</label>
+          <select id="f-req"><option value="\ud544\uc218">\ud544\uc218</option><option value="\uc120\ud0dd">\uc120\ud0dd</option><option value="\uae30\ub2a5\uc548\ub0b4">\uae30\ub2a5\uc548\ub0b4</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label>\uce74\ud14c\uace0\ub9ac</label>
+        <input type="text" id="f-cat" placeholder="\uc608: \uac15\uc758\uc2e4 \uc124\uc815, \ucd9c\uc11d \uad00\ub828..." list="cat-dl">
+        <datalist id="cat-dl"></datalist>
+      </div>
+      <div class="field">
+        <label>\uc81c\ubaa9</label>
+        <input type="text" id="f-title" placeholder="\uc124\uc815 \ud56d\ubaa9 \uc774\ub984">
+      </div>
+      <div class="field">
+        <label>\uacbd\ub85c</label>
+        <input type="text" id="f-path" placeholder="/admin/settings.php?section=...">
+      </div>
+      <div class="field">
+        <label>\ub0b4\uc6a9 / \uc635\uc158</label>
+        <textarea id="f-opts" placeholder="\uc124\uc815 \uc635\uc158 \ub0b4\uc6a9&#10;(1) \uc635\uc1581&#10;(2) \uc635\uc1582"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">\ucde8\uc18c</button>
+      <button class="btn primary" onclick="saveItem()">\uc800\uc7a5</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'moodle_lms_settings_v2';
+const BASE_DATA = [{"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "Studio, CSMSdoc, IBT \uc124\uce58", "path": "\uc2ac\ub799 : ar-clouddev-\uc124\uce58", "opts": "\ud074\ub77c\uc6b0\ub4dc\uac1c\ubc1c\ud300\uc5d0 \uc694\uccad (\ud56d\ubaa9\ubcc4\ub85c \ub4f1\ub85d\ud558\uae30)\n - \ub3d9\uc601\uc0c1: Studio, Learning Checker (\ub2f4\ub2f9 : \uc724\uc601\uc8fc)\n - \ud30c\uc77c: CSMSdoc (\ub2f4\ub2f9 : \ud5c8\uc608\uc9c0)\n - \uc2dc\ud5d8: IBT (\ub2f4\ub2f9 : \ubc15\ud615\uc120)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "\ucf54\uc2a4\ubaa8\uc2a4\uc571 \ub4f1\ub85d \uc694\uccad", "path": "\uc2ac\ub799 : ar_\ud504\ub85c\ub355\ud2b8-\ubaa8\ubc14\uc77c_\ub4f1\ub85d\uc694\uccad", "opts": "\ud0a4\uceec\ub7ec \ubc0f \ub85c\uace0 \uacf5\uc720", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "\uc2e4\uc2dc\uac04 \ubc88\uc5ed \uc5f0\ub3d9", "path": "\uc2ac\ub799 : ar_\ud504\ub85c\ub355\ud2b8-\ud2b8\ub79c\uc2a4\ud37c-lxp", "opts": "- \uacbd\ub85c : /admin/settings.php?section=local_ubion_transfer\n(1) \ub300\ud559 \ucf54\ub4dc \ubc1c\uae09 \uc694\uccad\n(2) \uc2dc\ud06c\ub9bf \ud0a4 1~3: ekam / refsnart / taerg\n(3) Google Translate API : AIzaSyD-n50a05zIIecjqS1vElP838QREizb5-4", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "\uc11c\ube44\uc2a4\ub370\uc2a4\ud06c \uc5f0\ub3d9", "path": "\uc2ac\ub799 : ar_cx\ud300_\uc5c5\ubb34\uc694\uccad", "opts": "CX\ud300 \ub300\ud559 \ucf54\ub4dc \ubc1c\uae09 \uc694\uccad\n- \uacbd\ub85c : /admin/category.php?category=local_manager\n- \uc635\uc158: \uc11c\ube44\uc2a4 \ub370\uc2a4\ud06c \ucf54\ub4dc (local_manager | momo)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "AI \uae30\ub2a5 \uc124\uce58 \uc694\uccad", "path": "\uc2ac\ub799 : ar_ai\uc81c\ud488_\uc5c5\ubb34\uc694\uccad", "opts": "\uacfc\uc81c \uc790\ub3d9 \ud3c9\uac00, \uad50\uc218\uc790 AI \ubb38\uc81c \uc0dd\uc131, \ud559\uc2b5\uc790 \ubaa8\uc758\uc2dc\ud5d8", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "\uba54\uc2dc\uc9c0(DM) \ud1a0\ud070 \uac12 \uc138\ud305", "path": "/admin/settings.php?section=local_talk", "opts": "(1) \ud658\uacbd \uc124\uc815 (local_talk | environment): '\ub77c\uc774\ube0c(\uc11c\ube44\uc2a4)'\n(2) Naddle Public Token (local_talk | naddle_public_token): \ucf54\uc2a4\ubaa8\uc2a445 dev\uc640 \ub3d9\uc77c\ud55c \ud1a0\ud070 \uac12\n(3) \uba54\ub274\ubc14 \uba54\uc138\uc9c0 \uc54c\ub9bc(local_talk | menu_message_alert_mode)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "flexiblepage_cm45 \uc801\uc6a9", "path": "/admin/settings.php?section=additionalhtml", "opts": "\uc2a4\ud06c\ub9bd\ud2b8: <script src=\"https://s3.ap-northeast-2.amazonaws.com/code.coursemos.co.kr/flexiblepage_cm45.js?v=0.01\"></script>", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uc5b8\uc5b4\ud329 (import)", "path": "/admin/tool/customlang/index.php", "opts": "\ud478\ud130 \uc8fc\uc18c \ubcc0\uacbd\n ko, en \uc5b8\uc5b4\ud329 import: 'pj_\ucc28\uc138\ub300lxp\uace0\ub3c4\ud654' \ucc44\ub110 \ucc38\uace0", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc720\ube44\uc628 \uacc4\uc815 \uc77c\uad04\uc5c5\ub85c\ub4dc", "path": "/local/manager/modules/member/upload.php", "opts": "\ud478\ud130 \uc8fc\uc18c \ubcc0\uacbd\n ko, en \uc5b8\uc5b4\ud329 import: 'pj_\ucc28\uc138\ub300lxp\uace0\ub3c4\ud654' \ucc44\ub110 \ucc38\uace0", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc0ac\uc6a9\uc790 \uc815\ucc45", "path": "/admin/settings.php?section=userpolicies", "opts": "\ud65c\ub3d9: \uc0ac\uc6a9\uc790 \uc544\uc774\ub374\ud2f0\ud2f0 \ud45c\uc2dc(showuseridentity): \uc544\uc774\ub514 \uccb4\ud06c", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ucd94\uac00\uae30\ub2a5 \uc124\uc815", "path": "/admin/settings.php?section=optionalsubsystems", "opts": "(1) \uc635\uc158 : \uc6f9\uc11c\ube44\uc2a4(enablewebservices) \ud65c\uc131\ud654\n(2) \uc635\uc158: \uc774\uc218\uacfc\uc815 \ucd94\uc801(enablecompletion) \ud65c\uc131\ud654 \n(3) \uc635\uc158 : \uc5ed\ub7c9(core_competency | enabled) \ube44\ud65c\uc131\ud654\n(4) \uc635\uc158 : MoodleNew \ud1b5\ud569 \ud65c\uc131\ud654(\uc218\uc2e0)  enablemoodlenet \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ud504\ub85c\ud1a0\ucf5c \uad00\ub9ac", "path": "/admin/settings.php?section=webserviceprotocols", "opts": "\uc635\uc158: REST \uaddc\uc57d \ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ub85c\uadf8 \uc800\uc7a5\uc18c \uad00\ub9ac", "path": "/admin/settings.php?section=managelogging", "opts": "\uc635\uc158: Standard log, Ubstats log\ub9cc \ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "PUSH \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_push", "opts": "CSMS45\uc640 \ub3d9\uc77c\ud558\uac8c \uc124\uc815: \ud478\uc2dc\uc11c\ubc84/ \ud3ec\ud2b8/ \ud0c0\uc784\uc544\uc6c3/ \uc778\uc99d \ubca0\uc5b4\ub7ec \ud1a0\ud070", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac8c\uc2dc\ud310", "title": "\ub300\uc2dc\ubcf4\ub4dc \uac8c\uc2dc\ud310 - \uc124\uc815 \uc811\uadfc \ubc29\ubc95", "path": "/course/modedit.php?add=ubboard&course=1&section=0", "opts": "(1) \uc0dd\uc131: /course/modedit.php?add=ubboard&course=1&section=0\n(2) \uc218\uc815: /course/modedit.php?update={cmid}\n(3) \uad8c\ud55c \uc124\uc815: /mod/ubboard/index.php?id=1 \uc5d0\uc11c \uc6b0\uce21 [\uc0ac\uc6a9 \uad8c\ud55c] \ubc84\ud2bc", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac8c\uc2dc\ud310", "title": "\ub300\uc2dc\ubcf4\ub4dc \uac8c\uc2dc\ud310 - \uc811\uadfc \uad8c\ud55c \uc124\uc815", "path": "/admin/roles/permissions.php?contextid={contextid}", "opts": "(1) \uc2dc\uc2a4\ud15c \uacf5\uc9c0: '\uc778\uc99d\ub41c \uc0ac\uc6a9\uc790' \uad8c\ud55c \ucd94\uac00 - \uac8c\uc2dc\uae00 \ubcf4\uae30, \ubaa9\ub85d\n (2) Q&A: '\uc778\uc99d\ub41c \uc0ac\uc6a9\uc790' \uad8c\ud55c \ucd94\uac00 - \uac8c\uc2dc\uae00 \ubcf4\uae30, \ubaa9\ub85d, \ucd94\uac00\n (3) FAQ: '\uc778\uc99d\ub41c \uc0ac\uc6a9\uc790' \uad8c\ud55c \ucd94\uac00 - \uac8c\uc2dc\uae00 \ubcf4\uae30, \ubaa9\ub85d", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac8c\uc2dc\ud310", "title": "UBBoard \uc124\uc815", "path": "/admin/settings.php?section=themesettingcoursemos#themecoursemos_ubboard", "opts": "\uba54\uc778 \ub300\uc2dc\ubcf4\ub4dc \uacf5\uc9c0\uc0ac\ud56d, Q&A \ub4f1 cmid \uc5f0\uacb0", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud14c\ub9c8 / UI", "title": "GNB, \uac15\uc758\uc2e4 \uba54\ub274 \uad00\ub9ac", "path": "/local/manager/modules/menu/site/index.php", "opts": null, "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud14c\ub9c8 / UI", "title": "\uae30\ubcf8 \uc0c9\uc0c1 \uc124\uc815", "path": "/admin/settings.php?section=themesettingcoursemos#themecoursemos_color", "opts": "\ud559\uad50 \uc0c9\uc0c1 \ubcc0\uacbd", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud14c\ub9c8 / UI", "title": "Coursemos \ub85c\uadf8\uc778 \ubc0f \ub85c\uace0 \ubc0f \ud30c\ube44\ucf58 \ubcc0\uacbd", "path": "/admin/settings.php?section=themesettingcoursemos#themecoursemos_login", "opts": "(1) \ub85c\uadf8\uc778 \ud398\uc774\uc9c0: /admin/settings.php?section=themesettingcoursemos#themecoursemos_login\n(2) \ub85c\uace0 \ubc0f \ud30c\ube44\ucf58: /admin/settings.php?section=logos", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud14c\ub9c8 / UI", "title": "GNB \uc218\uac15\uac15\uc88c \uba54\ub274 \ub178\ucd9c \uc5ec\ubd80 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_dashboard", "opts": "\uc635\uc158: Gnb \uc218\uac15 \uac15\uc88c \uba54\ub274 \uc124\uc815 (local_ubion | is_mycoursesetting_gnb)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud14c\ub9c8 / UI", "title": "\uac1c\uc778\uc815\ubcf4\ucc98\ub9ac\ubc29\uce68", "path": "/admin/settings.php?section=themesettingcoursemos#themecoursemos_univ", "opts": "\uac1c\uc778\uc815\ubcf4\ucc98\ub9ac\ubc29\uce68 \uc8fc\uc18c \uc785\ub825", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uac15\uc88c \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_course", "opts": "(1) \ud559\uc0dd\ud654\uba74 \ubcf4\uae30 \ubc84\ud2bc \ud45c\uc2dc (local_ubion | course_rolechange_coursetype): <\uad50\uacfc\uacfc\uc815, \uad50\uc721\ud504\ub85c\uadf8\ub7a8, \uc790\uc728\uacfc\uc815, \uae30\ud0c0\uacfc\uc815> \ud65c\uc131\ud654\n(2) \uc2dc\uc791\uc77c \uc774\uc804 \uc811\uadfc \ubd88\uac00 \uac15\uc88c (local_ubion | course_study_start_coursetype): <\uad50\uc721\ud504\ub85c\uadf8\ub7a8, \uc790\uc728\uacfc\uc815> \ud65c\uc131\ud654\n(3) \ud3b8\uc9d1 \ubc84\ud2bc \ud234\ud301 \ud45c\uc2dc (local_ubion | course_switch_tooltip)\n(4) \ud3b8\uc9d1 \ubc84\ud2bc \ud1a0\uae00 \uc0ac\uc6a9 \uc5ec\ubd80 (local_ubion | course_is_edittoggle)\n(5) \uc815\uaddc \uac15\uc88c \uc218\uc815 \ubd88\uac00 (local_ubion | course_regular_not_edit) : \uc815\uaddc\uac15\uc88c \uc8fc\ucc28/\ucc28\uc2dc \uc218\uc815 \ubd88\uac00 \uc124\uc815", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uac15\uc88c \ud3ec\ub9f7 \uad00\ub9ac", "path": "/admin/settings.php?section=manageformats", "opts": "(1) \uc635\uc158: \uc720\uc5f0\ud55c \uc139\uc158 \ud615\uc2dd, \ub2e4\uc911 \uc8fc\uc81c \ud615\uc2dd, \uc8fc\uac04 \uc139\uc158(ubweeks)\ub9cc \ud65c\uc131\ud654\n(2) \uc635\uc158: \uae30\ubcf8\uac12 - \uc8fc\uac04 \uc139\uc158(ubsweeks)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud559\uc2b5 \ud65c\ub3d9 \ubaa8\ub4c8", "path": "/admin/modules.php", "opts": "(1) \uc635\uc158: \ud558\uc704\uc139\uc158 \ud65c\uc131\ud654\n(2) \ud559\uc2b5\ud65c\ub3d9\ub9cc \ud65c\uc131\ud654: \uac8c\uc2dc\ud310, \uacfc\uc81c, \ub3d9\uc601\uc0c1, \uc124\ubb38\uc870\uc0ac, \uc2dc\ud5d8, \uc774\ub7ec\ub2dd\ucf58\ud150\uce20, \ud1a0\ub860, \ud30c\uc77c(*ubfile - 2014080700), URL\n (\ud559\uad50\ubcc4 \ud654\uc0c1\uac15\uc758) Zoom, webexactivity", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud559\uc2b5\uc790\uc6d0/\ud65c\ub3d9 \ucd94\uac00 \ud654\uba74 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_modedit", "opts": "\uc635\uc158: \uae30\ubcf8 \ubaa8\ub4c8 (local_ubion | modedit_base): url, ubfile, vod, econtents, ubboard, feedback, zoom, webexactivity, assign, quiz, forum \uc785\ub825", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uc774\uc218 \uae30\uc900 \uba54\ub274 \ud65c\uc131\ud654", "path": "/admin/settings.php?section=coursesettings", "opts": "(1) \uc139\uc158\uc758 \ucd5c\ub300 \uc218 (moodlecourse | maxsections) : 100 \uc774\uc0c1 \n(2) \uc644\ub8cc \uc870\uac74 \uae30\ub85d (moodlecourse | enablecompletion): \uc608", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ube44\uc815\uaddc \uac15\uc88c", "path": "/admin/settings.php?section=local_ubirregular", "opts": "\uc635\uc158: \uc0ac\uc6a9\uc5ec\ubd80 (local_ubirregular | used) \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uad50\uc721 \ud504\ub85c\uadf8\ub7a8 - \ud65c\uc131\ud654", "path": "/admin/settings.php?section=local_ubonline", "opts": "(1) \uad00\ub9ac\uc790 \uba54\ub274 \ud45c\uc2dc \uc5ec\ubd80 (local_ubonline | is): \uc635\uc158 \ud65c\uc131\ud654\n(2) \uc774\uc218\uacfc\uc815 \ucd94\uc801 \ud65c\uc131\ud654 (local_ubonline | enablecompletion): \uc635\uc158 \ud65c\uc131\ud654\n(3) \ubd84\ub958 \uc0ac\uc6a9 \uc5ec\ubd80: \ube44\ud65c\uc131\ud654 \uc2dc Front/Admin\uc5d0 \ud574\ub2f9 \uc601\uc5ed \ubbf8\ub178\ucd9c", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uc790\uc728\uacfc\uc815 - \ud65c\uc131\ud654", "path": "/admin/settings.php?section=local_ubeclass", "opts": "\uc635\uc158: \uc0ac\uc6a9\uc5ec\ubd80(local_ubeclass | used)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud559\uc2b5\ubd84\uc11d", "path": "/admin/settings.php?section=reportublogs_learning", "opts": "(1) \uc628\uc158 : \uba54\uc2dc\uc9c0 \ubcf4\ub0b4\uae30(report_ublogs | isRiskMessage) : \uc0ac\uc6a9 \n(2) \uc635\uc158: SMS \ubcf4\ub0b4\uae30 \uc0ac\uc6a9 (report_ublogs | isRiskSMS)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uc131\uc801\ubd80 \uc9d1\uacc4 \uc720\ud615", "path": "/admin/settings.php?section=gradecategorysettings", "opts": "\ud65c\ub3d9: \uc774\uc6a9\uac00\ub2a5\ud55c \uc9d1\uacc4 \uc720\ud615 (grade_aggregations_visible): \uc131\uc801 \uac00\uc911 \ud3c9\uade0, \uc131\uc801 \ub2e8\uc21c \uac00\uc911 \ud3c9\uade0, \uc131\uc801 \ud569\uacc4", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ubb38\uc81c\uc740\ud589", "title": "\ubb38\uc81c\uc740\ud589 - \uae30\ubcf8 \uac12 \uc124\uc815 (1)", "path": "/admin/qtypes.php", "opts": "\uc635\uc158: \ubb38\uc81c \uc720\ud615 \uc815\ub9ac (\uac15\uc6d0\ub300 \uae30\uc900)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ubb38\uc81c\uc740\ud589", "title": "\ubb38\uc81c\uc740\ud589 - \uae30\ubcf8 \uac12 \uc124\uc815 (2)", "path": "/question/bank/columnsortorder/sortcolumns.php?section=columnsortorder", "opts": "\uc0ad\uc81c \uc635\uc158: \ub09c\uc774\ub3c4 \uc9c0\ud45c, \ubcc0\ubcc4\ub825 \uc9c0\uc218, Comments, \uac80\ud1a0 \ud544\uc694", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ubb38\uc81c\uc740\ud589", "title": "\ubb38\uc81c\uc740\ud589 - \uae30\ubcf8 \uac12 \uc124\uc815 (3)", "path": "/admin/settings.php?section=manageqbanks", "opts": "\ube44\ud65c\uc131\ud654 \uc635\uc158: XML\ub85c \ub0b4\ubcf4\ub0b4\uae30", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ubb38\uc81c\uc740\ud589", "title": "[\uc77c\ubc18 \uc124\uc815] \uc2dc\ud5d8 - \uae30\ubcf8 \uac12 \uc124\uc815 (1)", "path": "/admin/settings.php?section=modsettingquiz", "opts": "(1) \uc81c\ud55c \uc2dc\uac04 \uc885\ub8cc \uc2dc (quiz | overduehandling): '\uc751\uc2dc \uc644\ub8cc \uc804\uc774\ub77c\ub3c4 \uc790\ub3d9 \uc81c\ucd9c'\n(2) \uc751\uc2dc \uac00\ub2a5 \ud69f\uc218(quiz | attempts) : 1  \n(3) \uc790\ub3d9 \uc800\uc7a5 \uae30\uac04 (quiz | autosaveperiod): 1\ubd84", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ubb38\uc81c\uc740\ud589", "title": "[\ubb38\ud56d \ubbf8\ub9ac\ubcf4\uae30 \uae30\ubcf8\uac12] \uc2dc\ud5d8 - \uae30\ubcf8 \uac12 \uc124\uc815 (2)", "path": "/admin/settings.php?section=qdefaultsetting", "opts": "(1) \ubb38\uc81c \ud480\uc774 \ubc0f \ucc44\uc810 \ubc29\uc2dd (question_preview | behaviour): '\uc2dc\ud5d8 \uc885\ub8cc \ud6c4 \ud53c\ub4dc\ubc31 (\uc9c0\uc5f0\ub41c \ud53c\ub4dc\ubc31)'", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\uacfc\uc81c - \uae30\ubcf8 \uac12 \uc124\uc815", "path": "/admin/settings.php?section=modsettingassign", "opts": "\uc635\uc158: \ucc44\uc810 \uc644\ub8cc \uc54c\ub9bc\uc77c (assign | gradingduedate) '\ud65c\uc131\ud654 \ub428' \uccb4\ud06c \ud574\uc81c", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\ud30c\uc77c - \ud45c\uc2dc \uc124\uc815", "path": "/admin/settings.php?section=modsettingubfile", "opts": "\ud65c\ub3d9: \ud45c\uc2dc(ubfile | display) - \ud31d\uc5c5\ucc3d", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\uc5c5\ub85c\ub4dc \ud655\uc7a5\uc790 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_default", "opts": "\uc635\uc158: \uc5c5\ub85c\ub4dc \ud655\uc7a5\uc790 \uc81c\ud55c (local_ubion | deny_ext) - exe", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\ub3d9\uc601\uc0c1 \uc790\ub9c9 \ubc0f \ubc30\uc18d \uae30\ub2a5 \ud65c\uc131\ud654", "path": "/admin/settings.php?section=modsettingvod", "opts": "(1) \uc635\uc158: \uc790\ub9c9 \uae30\ub2a5 \uc0ac\uc6a9\uc5ec\ubd80 (vod | subtitle) \ud65c\uc131\ud654\n(2) \ud65c\ub3d9: \ubc30\uc18d \uc0ac\uc6a9 \uc5ec\ubd80 (vod | rate) - \uc608", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\uac8c\uc2dc\ud310", "path": "/admin/settings.php?section=modsettingubboard", "opts": "(1) \uac15\uc88c \ub0b4 \ud31d\uc5c5 \uacf5\uc9c0 \uc0ac\uc6a9 \uc5ec\ubd80 (ubboard | coursePopup)\n(2) \uc0ac\uc774\ud2b8 \uacf5\uc9c0\uc0ac\ud56d \uc2e0\ubd84\ubcc4 \ud45c\uc2dc \uc0ac\uc6a9\uc5ec\ubd80 (ubboard | isUserType)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\ucd9c\uc11d\ubd80 \uc0ac\uc6a9 \uc5ec\ubd80", "path": "/admin/settings.php?section=local_ubattend_base", "opts": "(1) \uacb0\uc11d \ud45c\uc2dc \uae30\uc900: \ud574\ub2f9 \uc8fc\ucc28 \ucd9c\uc11d \uc778\uc815 \uae30\uac04\uc774 \uc2dc\uc791\ub420 \ub54c, \ucd9c\uc11d \uacb0\uacfc \uac12\uc744 \ubbf8\ub9ac\ubcf4\uae30\n >> \uae30\ubcf8\uac12: \uc8fc\ucc28 \uc2dc\uc791 \ud6c4 \ud45c\uc2dc / \ubcc0\uacbd \uc2dc PM \uacf5\uc720 \ud544\uc694", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\uc628\ub77c\uc778 \ucd9c\uc11d\ubd80 \uc124\uc815", "path": "/admin/settings.php?section=local_ubattend_online", "opts": "(1) \ucd9c\uacb0 \ubc18\uc601 \ubaa8\ub4c8 (local_ubattend | isAttendanceModules): \ubaa8\ub4c8\uba85(vod, econtents, zoom) \uc785\ub825", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\ub300\uba74 \ucd9c\uc11d \uc124\uc815", "path": "/admin/settings.php?section=local_ubattend_facetoface", "opts": "(1) \uc635\uc158: \ubcf4\uac15 \uc0ac\uc6a9 \uc5ec\ubd80 (local_ubattend | isMakeupDay)\n(2) \uc635\uc158: \ub300\uba74\ucd9c\uc11d \uc0ac\uc6a9 \uc5ec\ubd80 (local_ubattend | isFacetoface)\n(3) \uac15\uc88c\ub0b4 \ub300\uba74 \ucd9c\uc11d \uae30\ubcf8 \uc0ac\uc6a9 \uc5ec\ubd80 (local_ubattend | isFacetofaceCourse)\n(4) \ucd9c\uc11d \uc0c1\ud0dc\uac12(local_ubattend | statusLists) : \uae30\ud0c0 \uc81c\uc678", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud06c\ub860", "title": "\ud06c\ub860 \uc124\uc815", "path": "/admin/settings.php?section=sitepolicies", "opts": "(1) \uba85\ub839\uc5b4 \uc904\uc5d0\uc11c\ub9cc \ud06c\ub860 \uc2e4\ud589 (cronclionly): \uccb4\ud06c \ud574\uc81c(\uc544\ub2c8\uc694 \ucc98\ub9ac)\n(2) \ud06c\ub860 \ube44\ubc00\ubc88\ud638 (cronremotepassword): 'dbqldhs' \ube44\ubc00\ubc88\ud638 \uc785\ub825", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ud06c\ub860", "title": "\ud06c\ub860 \uad00\ub828 \ube44\ud65c\uc131\ud654", "path": "/admin/tool/task/scheduledtasks.php", "opts": "(1) \ub85c\uadf8\uc778 \uc2e4\ud328 \uc54c\ub9bc \uc804\uc1a1(Send failed login notifications) \ube44\ud65c\uc131\ud654\n(2) \ud1a0\ub860 \uba54\uc77c \ubc1c\uc1a1 \ubc0f \uc720\uc9c0 \uad00\ub9ac \uc791\uc5c5 :\ube44\ud65c\uc131\ud654\n(3) h5p.org\uc5d0\uc11c \uc0ac\uc6a9 \uac00\ub2a5\ud55c H5P \ucf58\ud150\uce20 \uc720\ud615 \ub2e4\uc6b4\ub85c\ub4dc : \ube44\ud65c\uc131\ud654\n(4) Task reaches its maximum fail delay : \ube44\ud65c\uc131\ud654 (\uacfc\uc81c \uc2e4\ud328)", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc54c\ub9bc \uad00\ub828", "title": "H5P \ube44\ud65c\uc131\ud654", "path": "/admin/filters.php", "opts": "(1) H5P \ud45c\uc2dc: \ube44\ud65c\uc131\ud654\n(2) /admin/settings.php?section=managecontentbanktypes: \ube44\ud65c\uc131\ud654\n(3) /admin/settings.php?section=editorsettingstiny: Insert H5P \ube44\ud65c\uc131\ud654\n(4) \ud65c\ub3d9\uba85 \uc790\ub3d9 \uc5f0\uacb0 : \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc54c\ub9bc \uad00\ub828", "title": "\ub514\ubc84\uadf8 \uba54\uc138\uc9c0", "path": "/admin/settings.php?section=debugging", "opts": "\ub514\ubc84\uadf8 \uba54\uc138\uc9c0(debug) \uc124\uc815: \ucd5c\uc18c:\uce58\uba85\uc801\uc778 \uc624\ub958\ub9cc \ubcf4\uc5ec\uc8fc\uae30", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc54c\ub9bc \uad00\ub828", "title": "\ud1a0\ub860 \uad6c\ub3c5 \ube44\ud65c\uc131\ud654", "path": "/admin/settings.php?section=modsettingforum", "opts": "(1) \uad6c\ub3c5 \uc635\uc158(forum_subscription): \uad6c\ub3c5 \ubd88\uac00\ub2a5\n(2) \uad6c\ub3c5 \uc635\uc158(forum_announcementsubscription): \uad6c\ub3c5 \ubd88\uac00\ub2a5", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc54c\ub9bc \uad00\ub828", "title": "\uc0c8 \ub85c\uadf8\uc778 \uc54c\ub9bc \ube44\ud65c\uc131\ud654", "path": "/admin/message.php", "opts": "(1) \uc0c8 \ub85c\uadf8\uc778 \uc54c\ub9bc : \ube44\ud65c\uc131\ud654\n(2) Welcome message for new course enrolments : \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc54c\ub9bc \uad00\ub828", "title": "\ud1a0\ub860 \uba54\uc77c \ubc1c\uc1a1 \ube44\ud65c\uc131\ud654", "path": "/admin/tool/task/scheduledtasks.php?action=edit&task=mod_forum%5Ctask%5Ccron_task", "opts": "\ud65c\ub3d9: \ube44\ud65c\uc131\ud654 \uccb4\ud06c", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uc54c\ub9bc \uad00\ub828", "title": "\ube44\ub3d9\uae30 \ubc31\uc5c5/\ubcf5\uc6d0", "path": "/admin/settings.php?section=asyncgeneralsettings", "opts": "(1) \ube44\ub3d9\uae30 \ubc31\uc5c5 \ud65c\uc131\ud654 (enableasyncbackup) : \ube44\ud65c\uc131\ud654\n(2) \uc54c\ub9bc \ud65c\uc131\ud654 (backup_async_message_users) : \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\ucd9c\uc11d \uc7ac\uacc4\uc0b0", "path": "/local/ubattend/recal.php?id=\uac15\uc88c\ubc88\ud638", "opts": null, "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\uc9c4\ub3c4 \uc7ac\uacc4\uc0b0", "path": "/local/ubattend/recalProgress.php?id=\uac15\uc88c\ubc88\ud638", "opts": null, "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud559\uc2b5\uc790 - \uac15\uc758\uc2e4 '\uc131\uc801 \uc870\ud68c' \uba54\ub274 \ub178\ucd9c", "path": "/course/edit.php?id={courseid}", "opts": "\uc635\uc158: \ud559\uc0dd\ub4e4\uc5d0\uac8c \uc131\uc801\ubd80 \ubcf4\uc5ec\uc8fc\uae30 - '\uc608'", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc0ac\uc6a9\uc790 - \uc5ed\ud560 \uad00\ub9ac", "path": "/admin/roles/manage.php", "opts": "\uc5ed\ud560 \ucd94\uac00 \ubc0f \uc218\uc815", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc0ac\uc6a9\uc790 \uc77c\uad04 \uc0ad\uc81c", "path": "/admin/user/user_bulk.php", "opts": "\ud544\ud130\ub85c \uc0ac\uc6a9\uc790 \uad6c\ubd84\ud558\uc5ec \uc0ad\uc81c \uac00\ub2a5", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\ud68c\uc6d0\uad00\ub9ac", "path": "/admin/settings.php?section=local_ubion_user", "opts": "\ucd9c\uc11d\ubd80 \ub0b4 \ubd80\uc11c, \ud559\uacfc \ud45c\uc2dc \uc124\uc815 : local_ubion | user_department_type", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\ucc38\uc5ec\uc790 \ubaa9\ub85d \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_participants", "opts": "\ud559\ub144/ \ub300\ud559\uc6d0/ \uc774\uba54\uc77c/ \uc5f0\ub77d\ucc98/ \ud559\uc0dd \uc5ed\ud560 \ubbf8\ud45c\uc2dc \ub4f1 \uc124\uc815", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc870\uad50/\uccad\uac15\uc0dd \uc2e0\uccad", "path": "/admin/settings.php?section=local_ubassistant", "opts": null, "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc870\uad50, \uccad\uac15\uc0dd roleid \ud655\uc778", "path": "/admin/settings.php?section=local_ubion_default", "opts": "roleid \ud655\uc778: /admin/roles/manage.php", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc0ac\uc6a9\uc790 \uc124\uc815 (\uacc4\uc815 \uc7a0\uae08)", "path": "/admin/settings.php?section=sitepolicies", "opts": "\ud65c\ub3d9: \uacc4\uc815 \uc7a0\uae08 \uc784\uacc4 \uac12 (lockoutthreshold): \uacc4\uc815 \uc7a0\uae08\uc774 \uc801\uc6a9\ub418\ub294 \ub85c\uadf8\uc778 \uc2e4\ud328 \ud69f\uc218 \uc124\uc815", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc77c\ubc18\uc778 \ud68c\uc6d0 \uac00\uc785", "path": "/admin/search.php?query=registerauth", "opts": "(1) \uc790\uccb4\ub4f1\ub85d - \uad00\ub9ac\ubaa8\ub4dc \ud574\uc81c => \ud68c\uc6d0 \uac00\uc785 \ubd88\uac00\ub2a5\n(2) \uc790\uccb4\ub4f1\ub85d - \uc774\uba54\uc77c \uae30\ubc18 \uc778\uc99d => \ud68c\uc6d0 \uac00\uc785 \uac00\ub2a5", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\ud68c\uc6d0 \uac00\uc785 \ud398\uc774\uc9c0 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_register", "opts": "\uc774\uc6a9 \uc57d\uad00 \ubc0f \uac1c\uc778\uc815\ubcf4 \uc218\uc9d1 \ub3d9\uc758 \uc218\uc815", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "[\uc778\uc99d \uad00\ub9ac]\n\uc77c\ubc18\uc778 \ud68c\uc6d0 \uac00\uc785 \uc2dc reCAPTCHA \uc801\uc6a9", "path": "/admin/search.php?query=recaptcha", "opts": "(1) \ub85c\uadf8\uc778 \uc2dc reCAPTCHA \ud65c\uc131\ud654(enableloginrecaptcha) -> \uc544\ub2c8\uc694\n(2) ReCAPTCHA \uacf5\uac1c\ud0a4/\ube44\ubc00\ud0a4: \uc11c\ube44\uc2a4 \uac00\uc785 \ud6c4 \ud0a4 \uac12 \uc785\ub825\n(3) \uc774\uba54\uc77c \uae30\ubc18 \uc778\uc99d: reCAPTCHA \uae30\ub2a5 \ud65c\uc131\ud654 (auth_email | recaptcha) -> \uc608", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc544\uc774\ub514/\ube44\ubc00\ubc88\ud638 \ucc3e\uae30", "path": "/admin/settings.php?section=sitepolicies", "opts": "(1) \ube44\ubc00\ubc88\ud638 \uc7ac\uc124\uc815 \uc694\uccad \uc720\ud6a8\uc131 \uac80\uc0ac \ucd5c\ub300 \uc2dc\uac04(pwresettime) : 30\ubd84 (\ubcf4\uc548 \uce21\uba74)\n(2) \ube44\ubc00\ubc88\ud638 \ubcc0\uacbd \ud6c4 \ub85c\uadf8\uc544\uc6c3(passwordchangelogout) : \uc608\n - \uc608 : \uc0ac\uc6a9\uc790\uac00 \ub85c\uadf8\uc544\uc6c3 \uc5ec\ubd80 \uc120\ud0dd \ubd88\uac00 / \uc544\ub2c8\uc624 : \uc120\ud0dd \uac00\ub2a5", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\ubaa8\ub4c8\uc124\uc815 - \uacfc\uc81c", "path": "/admin/settings.php?section=local_ubion_modules", "opts": "\ud65c\ub3d9: \ube60\ub978 \ucc44\uc810 \ubaa8\ub4dc \uae30\ubcf8\uac12 (local_ubion | is_assign_quickgrading)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "Zoom", "path": "/admin/settings.php?section=modsettingzoom", "opts": null, "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uac15\uc88c \ud0c0\uc785\ubcc4 SMS \uc81c\uacf5 \uc5ec\ubd80", "path": "/admin/settings.php?section=local_ubsend_sms", "opts": "\uc635\uc158: SMS \uc804\uc1a1 \uac15\uc88c \uc720\ud615 (local_ubsend | smsCourseTypes)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uac15\uc88c \ud0c0\uc785\ubcc4 \uc774\uba54\uc77c \uc81c\uacf5 \uc5ec\ubd80", "path": "/admin/settings.php?section=local_ubsend_email", "opts": "(1) \uc774\uba54\uc77c \uc804\uc1a1 \uc0ac\uc6a9 \uc5ec\ubd80(local_ubsend | email_is) : \uae30\ubcf8\uac12 '\uc544\ub2c8\uc624'\n(2) \uc635\uc158: \uc774\uba54\uc77c \uc804\uc1a1 \uac15\uc88c \uc720\ud615(local_ubsend | emailCourseTypes)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\uac8c\uc2dc\ud310 - \ucca8\ubd80\ud30c\uc77c \uac1c\uc218 \uae30\ubcf8 \uac12", "path": "/admin/settings.php?section=modsettingubboard", "opts": "\uc635\uc158: \ucca8\ubd80\ud30c\uc77c \uae30\ubcf8 \uc5c5\ub85c\ub4dc \uac1c\uc218 (ubboard | defaultUploadCount)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\ub3d9\uc601\uc0c1 \uc124\uc815", "path": "/admin/settings.php?section=modsettingvod", "opts": "\"\ub3d9\uc601\uc0c1 \ubcc0\ud658 \uc911\uc785\ub2c8\ub2e4.\" \uba54\uc138\uc9c0 \ub730 \ub54c, API \uc11c\ubc84 \uc8fc\uc18c(wm_api_addr) \ud655\uc778 \ud544\uc694 (\uace0\uac1d\uc0ac\ubcc4\ub85c \uc8fc\uc18c\uac00 \ub2e4\ub984)", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ub2e4\ud06c\ubaa8\ub4dc \ud65c\uc131\ud654", "path": "/admin/settings.php?section=themesettingcoursemos", "opts": "\uc0ac\uc6a9\uc5ec\ubd80 (theme_coursemos | isdarkmode)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ud0c0", "title": "\uc0ac\uc774\ud2b8 \ud1a0\ud070 \ud655\uc778", "path": "/local/manager/modules/site/token/index.php", "opts": "\ud65c\ub3d9: \ud1a0\ud070\uac12 \ud655\uc778 (\ucf54\uc2a4\ubaa8\uc2a4 \uc571, \uc544\uc774\ubaa8\ub4c8 \uc5f0\ub3d9 \uc2dc \ud544\uc694)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uc774\ubc88 \uc8fc \ud560\uc77c \uae30\uac04 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_dashboard", "opts": "(1) \uc870\ud68c\uae30\uac04 - \uacfc\uac70 (local_ubion | upcoming_activity_prev)\n(2) \uc870\ud68c\uae30\uac04 - \ubbf8\ub798 (local_ubion | upcoming_activity_next)", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uc2dc\uc791 \ud398\uc774\uc9c0 \uc124\uc815", "path": "/admin/settings.php?section=frontpagesettings", "opts": "\uc0ac\uc774\ud2b8 \uba85\uce6d \uc218\uc815", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud06c\ub860", "title": "\ud06c\ub860 \uc2e4\ud589", "path": "/admin/cron.php?password=dbqldhs", "opts": null, "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\uae30\ud0c0", "title": "\uc774\uba54\uc77c \ud14c\uc2a4\ud2b8", "path": "/admin/settings.php?section=outgoingmailconfig", "opts": "SMTP \uc124\uc815: /admin/settings.php?section=outgoingmailconfig\n \uc774\uba54\uc77c \ubc1c\uc1a1 \ud14c\uc2a4\ud2b8: /admin/testoutgoingmailconf.php\n \uc774\uba54\uc77c \ubc1c\uc1a1 \ud14c\uc2a4\ud2b8(\ub85c\uceec): /local/manager/modules/site/mailtest/index.php\n \uac15\uc758\uc2e4 \uc774\uba54\uc77c \uc0ac\uc6a9 \uc5ec\ubd80: /admin/settings.php?section=local_ubsend_email", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uac15\uc88c \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_course", "opts": "(1) \ud65c\uc131\ud654 \uc2dc \uac15\uc758\uc2e4\uc5d0\uc11c \ucd5c\uadfc \uacf5\uc9c0\uc0ac\ud56d \ucd5c\ub300 3\uac1c \ub178\ucd9c\n- \ucd5c\uadfc \uacf5\uc9c0 \uc0ac\ud56d \ud45c\uc2dc \uae30\ubcf8 \ud65c\uc131\ud654 (local_ubion | course_isrecentnotice_default)\n(2) \uac15\uc88c \uc124\uc815 \uad00\ub9ac (\uac15\uc758\uc2e4 \uc635\uc158 \uc124\uc815 \uad8c\ud55c) \n- \uac15\uc758\uc2e4 \uc0ac\uc6a9 \uc5ec\ubd80 |  \uc8fc\ucc28 \ucd9c\ub825 \ubc29\ubc95 | \uc8fc\ucc28 | \ucc28\uc2dc | \uac15\uc88c \ud45c\uc2dc \ubc29\ubc95 \ub4f1", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "4.5", "cat": "\uae30\ud0c0", "title": "\uc815\ucc45 \uc124\uc815", "path": "/admin/settings.php?section=policysettings", "opts": "- \uc0ac\uc774\ud2b8 \uc815\ucc45 URL (sitepolicy) : LXP URL/policy.php", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ud0c0", "title": "\uae30\ubcf8 \uc124\uc815 - \uc0ac\uc774\ud2b8 \uc815\ucc45 \ub3d9\uc758", "path": "/admin/settings.php?section=local_ubion_default", "opts": "- \uc0ac\uc774\ud2b8 \uc815\ucc45 \ub3d9\uc758(local_ubion | site_privacy) : \ub3d9\uc758 \ub0b4\uc6a9 \uc791\uc131", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\uae30\ud0c0", "title": "SNS \ub85c\uadf8\uc778 \uc124\uc815", "path": "(1) /admin/settings.php?section=themesettingcoursemos#themecoursemos_login\n(2)  /admin/settings.php?section=manageauths", "opts": "(1) SNS \ub85c\uadf8\uc778 \uc601\uc5ed \ud45c\uc2dc (theme_coursemos | loginform_sns_is ) \ud65c\uc131\ud654\n(2) SNS Login - \ud65c\uc131\ud654", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud14c\ub9c8 / UI", "title": "\ub85c\uadf8\uc778 \ud398\uc774\uc9c0 \uc124\uc815", "path": "/admin/settings.php?section=themesettingcoursemos#themecoursemos_login", "opts": "(1)android \uc571 \ub2e4\uc6b4\ub85c\ub4dc \uc8fc\uc18c (app_android) :https://play.google.com/store/apps/details?id=kr.coursemos.lxp&pcampaignid=web_share\n(2) ios \uc571 \ub2e4\uc6b4\ub85c\ub4dc \uc8fc\uc18c ( app_ios) : https://apps.apple.com/kr/app/%EC%BD%94%EC%8A%A4%EB%AA%A8%EC%8A%A4-lxp/id6757424159", "req": "\ud544\uc218"}, {"v": "4.5", "cat": "\uae30\ud0c0", "title": "\uac15\uc758\uc790\uac00\uc9c4\ub2e8", "path": "/admin/settings.php?section=local_ubassessment", "opts": "\uad00\ub9ac\uc790 \uba54\ub274 \ub0b4 \uac15\uc758\uc790\uac00\uc9c4\ub2e8(\uc0ac\uc774\ud2b8 \uc124\ubb38, \uac15\uc758 \ud3c9\uac00) \uae30\ub2a5 \ud65c\uc131\ud654", "req": "\uc120\ud0dd"}, {"v": "4.5", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "\ub3d9\uc601\uc0c1", "path": "/admin/settings.php?section=modsettingvod", "opts": "\ub3d9\uc601\uc0c1 \uad50\uccb4(UUID) - \uc9c4\ub3c4 \uae30\ub85d \uc0ad\uc81c \uc5ec\ubd80 (\uae30\ubcf8\uac12 : \ube44\ud65c\uc131\ud654)  \n- \uc635\uc158 : \ub3d9\uc601\uc0c1 \ubcc0\uacbd\uc2dc \uc9c4\ub3c4 \uae30\ub85d \uc0ad\uc81c (vod | is_delete_progress_changing_content)", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "3.9", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "\ud074\ub77c\uc6b0\ub4dc \uc124\uce58", "path": "\uc2ac\ub799 : ar-clouddev-\uc124\uce58", "opts": "VOD, Learning Checker, CSMSdoc \uc124\uce58 \uc694\uccad", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "CX\ud300 \uc124\uce58", "path": "\uc2ac\ub799 : ar_cx\ud300_\uc5c5\ubb34\uc694\uccad", "opts": "\ub9e4\ub274\uc5bc \ubc0f \uc11c\ube44\uc2a4\ub370\uc2a4\ud06c \uc694\uccad", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "\ucf54\uc2a4\ubaa8\uc2a4\uc571 \ub4f1\ub85d \uc694\uccad", "path": "\uc2ac\ub799 : ar_\ud504\ub85c\ub355\ud2b8-\ubaa8\ubc14\uc77c_\ub4f1\ub85d\uc694\uccad", "opts": "\ud0a4\uceec\ub7ec \ubc0f \ub85c\uace0 \uacf5\uc720", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uc6b4\uc601\uae30 \uc124\uce58", "title": "FlexibleJS \uc801\uc6a9 \uc694\uccad", "path": "/admin/settings.php?section=additionalhtml", "opts": "flexiblejs \uc2a4\ud06c\ub9bd\ud2b8 \ucd94\uac00", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uc5b8\uc5b4 \uc0ac\uc6a9\uc790 \ub9de\ucda4", "path": "/admin/tool/customlang/index.php", "opts": "\ud559\uad50 \uba85\uce6d \ud655\uc778", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud559\uc2b5\ud65c\ub3d9 \ud65c\uc131\ud654", "path": "/admin/modules.php", "opts": "\uc0ac\uc6a9\ud560 \ud559\uc2b5\ud65c\ub3d9\ub9cc \ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud30c\uc77c \uc720\ud615", "path": "/admin/tool/filetypes/index.php", "opts": "hwp \ucd94\uac00", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ubb38\uc81c \uc720\ud615 \uad00\ub9ac", "path": "/admin/qtypes.php", "opts": "\uc0ac\uc6a9\ud558\uc9c0 \uc54a\ub294 \ubb38\uc81c \uc720\ud615 \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ud504\ub85c\ud1a0\ucf5c \uad00\ub9ac", "path": "/admin/settings.php?section=webserviceprotocols", "opts": "REST \uaddc\uc57d \ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ub85c\uadf8 \ubcf4\uad00\uc601\uc5ed \uad00\ub9ac", "path": "/admin/settings.php?section=managelogging", "opts": "\ud45c\uc900\ub85c\uadf8, Ubstats log \ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uc5ed\ub7c9 \uc124\uc815", "path": "/admin/settings.php?section=competencysettings", "opts": "\uc5ed\ub7c9 \ube44\ud65c\uc131\ud654 (core_competency | enabled)", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ucd94\uac00\uae30\ub2a5 \uc124\uc815", "path": "/admin/settings.php?section=optionalsubsystems", "opts": "\ud559\uc2b5\uc131\uacfc \ube44\ud65c\uc131\ud654(enableoutcomes) , \uc774\uc218\uacfc\uc815 \ucd94\uc801 \ud65c\uc131\ud654, Analytics : \ube44\ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\ubb38\uc81c\uc740\ud589", "title": "\uc77c\ubc18\uc124\uc815", "path": "/admin/settings.php?section=modsettingquiz", "opts": "\uc2dc\uac04\uc81c\ud55c \ucd08\uacfc \uc2dc = \uc751\uc2dc \ub0b4\uc6a9 \uc790\ub3d9 \uc81c\ucd9c, \ub2f5\uc548 \uc81c\ucd9c \ud69f\uc218 = 1, \uc790\ub3d9 \uc800\uc7a5 \uae30\uac04(autosaveperiod) : 5\ubd84", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uac15\uc88c \ud3ec\ub9f7 \uad00\ub9ac", "path": "/admin/settings.php?section=manageformats", "opts": "\ud1a0\ud53d, \ud1a0\ud53d(\ud45c\uc900), \uc8fc\ubcc4(\ud45c\uc900)\ub9cc \ud65c\uc131\ud654", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uc0ac\uc6a9\uc790 \uad00\ub9ac", "title": "\uc0ac\uc6a9\uc790 \uc815\ucc45", "path": "/admin/settings.php?section=userpolicies", "opts": "\uc0ac\uc6a9\uc790 \uc544\uc774\ub374\ud2f0\ud2f0(showuseridentity) \ud559\ubc88 \ucd94\uac00", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac8c\uc2dc\ud310", "title": "\uac8c\uc2dc\ud310 \uc0dd\uc131", "path": "/course/modedit.php?add=ubboard&course=1&section=0", "opts": "\uc774\uc6a9\uc548\ub0b4 \uac8c\uc2dc\ud310 \uc0dd\uc131(\uacf5\uc9c0\uc0ac\ud56d, Q&A, FAQ)", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac8c\uc2dc\ud310", "title": "\uac8c\uc2dc\ud310 \uc124\uc815", "path": "/admin/settings.php?section=themecoursemos_ubboard", "opts": "cmid(\ucf58\ud150\uce20 \uace0\uc720\ubc88\ud638) \uc124\uc815 + \uc6b0\uce21 \uc0c1\ub2e8 \uacf5\uc9c0\uc0ac\ud56d \uc5f0\uacb0", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac8c\uc2dc\ud310", "title": "\uac8c\uc2dc\ud310 \uc0ac\uc6a9\uad8c\ud55c", "path": "- \ud14c\ub9c8 \uae68\uae30 : &theme=boost \n- \ud14c\ub9c8 \ubcf5\uad6c : &theme=coursemos", "opts": "\ucf54\uc2a4\ubaa8\uc2a4 \ud14c\ub9c8 \uae6c \ud6c4 \uacf5\uc9c0\uc0ac\ud56d, Q&A, FAQ \uc0ac\uc6a9 \uad8c\ud55c \uc124\uc815 \ud544\uc694", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ube44\uad50\uacfc \uac15\uc88c(ubirregular)", "path": "/admin/settings.php?section=local_ubirregular", "opts": "\ubbf8\uc0ac\uc6a9 \uc2dc \uad00\ub9ac\uc790 \uba54\ub274\uc5d0\uc11c \uc228\uae40\ucc98\ub9ac  (ubonline, ubeclass)", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ub85c\uace0 \ubc0f \uceec\ub7ec \uc124\uc815", "path": "/admin/settings.php?section=themecoursemos_default", "opts": "\ub85c\uace0 \ubc0f \ud30c\ube44\ucf58 \uc124\uc815", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\ub85c\uadf8\uc778 \ud398\uc774\uc9c0 \uc124\uc815", "path": "/admin/settings.php?section=themecoursemos_login", "opts": "\ub85c\uadf8\uc778 \ubc30\uacbd \uc774\ubbf8\uc9c0", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\uac1c\uc778\uc815\ubcf4\ucc98\ub9ac\ubc29\uce68", "path": "/admin/settings.php?section=themecoursemos_univ", "opts": "\uac1c\uc778\uc815\ubcf4\ucc98\ub9ac\ubc29\uce68, \ud478\ud130", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\uc870\uad50 / \uccad\uac15\uc0dd \uc2e0\uccad", "path": "/admin/settings.php?section=local_ubassistant", "opts": "\uc870\uad50 \ubc0f \uccad\uac15\uc0dd \uc2e0\uccad \uc5ec\ubd80", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\uac15\uc88c \uc124\uc815", "path": "/admin/settings.php?section=themecoursemos_course", "opts": "\uac15\uc758\uc2e4 '\ube60\ub978\ubaa8\ub4c8' \uc124\uc815  (resource -> ubfile)", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud559\uc0dd \ud654\uba74 \ubcf4\uae30 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_courseuser", "opts": "\ud559\uc0dd\ud654\uba74 \ubcf4\uae30 \ubc84\ud2bc \ud45c\uc2dc", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\ud559\uc2b5 \ubaa8\ub4c8", "title": "VOD", "path": "/admin/settings.php?section=modsettingvod", "opts": "\ubc30\uc18d \uc0ac\uc6a9 \uc5ec\ubd80(vod | rate), \uc7ac\uc0dd \uc644\ub8cc \ud6c4 \ubc30\uc18d \uc0ac\uc6a9(vod | rate_progress_complete) : '\uc608' \uccb4\ud06c", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uad00\ub9ac\uc790 \ud398\uc774\uc9c0 \uc124\uc815", "path": "/admin/settings.php?section=local_ubion_adminpage", "opts": "\uc11c\ube44\uc2a4\ub370\uc2a4\ud06c \uba54\ub274 \ud65c\uc131\ud654 \ubc0f \uae30\uad00\ucf54\ub4dc \ubc1c\uae09 \ud6c4 \uc124\uc815 \ud544\uc694", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uc0ac\uc774\ud2b8 \uba54\ub274 \uad6c\uc131 \uc218\uc815", "path": "/local/ubion/index.php/site/menu", "opts": "\uad00\ub9ac\uc790 \uba54\ub274", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uae30\ubcf8 \uc124\uc815", "title": "\uac15\uc88c \uba54\ub274 \uad6c\uc131 \uc218\uc815", "path": "/local/ubion/index.php/site/menu/@index?courseid=0", "opts": "\uad00\ub9ac\uc790 \uba54\ub274", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\uac15\uc758\uc2e4 \uc124\uc815", "title": "\ud734\uc9c0\ud1b5", "path": "/admin/settings.php?section=tool_recyclebin", "opts": "\ud734\uc9c0\ud1b5 (\uae30\ubcf8\uac12 : \ud65c\uc131\ud654)", "req": "\ud544\uc218"}, {"v": "3.9", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\uc628\ub77c\uc778 \ucd9c\uc11d\ubd80", "path": "/admin/settings.php?section=local_ubonattend", "opts": "\uc628\ub77c\uc778 \ucd9c\uc11d\ubd80", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\ucd9c\uc11d \uad00\ub828", "title": "\uc624\ud504\ub77c\uc778 \ucd9c\uc11d\ubd80", "path": "/admin/settings.php?section=local_uboffattend", "opts": "\uc624\ud504\ub77c\uc778 \ucd9c\uc11d\ubd80", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\uc544\uc774\ubaa8\ub4c8", "path": "/admin/settings.php?section=local_imodule", "opts": "(1) \uc544\uc774\ubaa8\ub4c8 \uc554\ud638\ud654\ud0a4 :  kr.coursemos.{$\uc0ac\uc774\ud2b8\ud0a4}\n(2) \uc138\uc158\ub3d9\uae30\ud654 URL : \uc640\uc774\uc624\uc988\uc5d0\uc11c \uc785\ub825", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\uc778\uc99d\uad00\ub9ac", "path": "/admin/settings.php?section=manageauths", "opts": "IMODULE SSO \ud65c\uc131\ud654", "req": "\uc120\ud0dd"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\ud1a0\ud070", "path": "/admin/settings.php?section=webservicetokens", "opts": "\ud1a0\ud070 \ud655\uc778", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\uba54\uc77c \ud14c\uc2a4\ud2b8", "path": ["/local/ubion/index.php/site/mailtest", "/admin/testoutgoingmailconf.php"], "opts": "\uba54\uc77c \uc0ac\uc6a9 \uc2dc \ubc1c\uc1a1 \ud14c\uc2a4\ud2b8", "req": "\uae30\ub2a5\uc548\ub0b4"}, {"v": "3.9", "cat": "\uae30\ud0c0", "title": "\ud65c\ub3d9\ubcc4 \ud559\uc2b5\uc774\ub825 \ub300\uc0c1 \uc124\uc815", "path": "/admin/settings.php?section=reportublogs_statistics_module", "opts": "\ud559\uc2b5\uc790\uc6d0(URL, VOD, \uc774\ub7ec\ub2dd, \ud30c\uc77c \ub4f1), \ud559\uc2b5\ud65c\ub3d9(\uacfc\uc81c, \ud034\uc988), \uc8fc\ucc28\ubcc4 \ud65c\ub3d9", "req": "\uae30\ub2a5\uc548\ub0b4"}];
+
+let DATA = loadData();
+let editingId = null;
+let chatVer = '4.5';
+let chatHistory = [];
+
+function loadData() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return BASE_DATA.map((item, i) => ({...item, id: 'b_'+i, isBase: true}));
+}
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); } catch(e) {}
+}
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// Tab / Ver
+function switchTab(t) {
+  document.getElementById('chat-panel').style.display = t==='chat'?'flex':'none';
+  document.getElementById('admin-panel').style.display = t==='admin'?'flex':'none';
+  document.getElementById('tab-chat').classList.toggle('active', t==='chat');
+  document.getElementById('tab-admin').classList.toggle('active', t==='admin');
+  document.getElementById('ver-tabs').style.display = t==='chat'?'flex':'none';
+  if (t==='admin') { populateCatFilter(); renderList(); }
+}
+function setVer(v, el) {
+  chatVer = v;
+  document.querySelectorAll('.ver-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Search for chat
+function searchData(q) {
+  const ql = q.toLowerCase();
+  const ver = chatVer;
+  return DATA.filter(s => {
+    if (ver!=='all' && s.v!==ver) return false;
+    return (s.title||'').toLowerCase().includes(ql)||
+           (s.cat||'').toLowerCase().includes(ql)||
+           (s.opts||'').toLowerCase().includes(ql)||
+           (typeof s.path==='string'?s.path:'').toLowerCase().includes(ql);
+  }).slice(0,4);
+}
+
+// Chat
+function addMsg(role, html) {
+  const c = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg '+role;
+  d.innerHTML = `<div class="avatar"><i class="ti ti-${role==='bot'?'robot':'user'}"></i></div><div>${html}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function showTyping() {
+  const c = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className='msg bot'; d.id='typing';
+  d.innerHTML=`<div class="avatar"><i class="ti ti-robot"></i></div><div class="bubble"><div class="typing-wrap"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function hideTyping() { const el=document.getElementById('typing'); if(el) el.remove(); }
+
+function card(item) {
+  const p = Array.isArray(item.path)?item.path.join('<br>'):(item.path||'');
+  const isUrl = p.startsWith('/')||p.startsWith('http');
+  const tag = !item.isBase?`<span class="custom-tag">\ucd94\uac00\ub428</span>`:'';
+  return `<div class="result-card">
+    <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap">
+      <span class="rbadge req-${item.req}">${item.req}</span>
+      <span style="font-size:11px;color:var(--text2)">${item.cat} &middot; v${item.v}</span>${tag}
+    </div>
+    <div class="rtitle">${item.title}</div>
+    ${isUrl?`<div class="rpath">${p}</div>`:`<div style="font-size:11px;color:var(--text2);margin:3px 0">${p}</div>`}
+    ${item.opts?`<div class="ropts">${item.opts}</div>`:''}
+  </div>`;
+}
+
+async function ask(q) { document.getElementById('inp').value=q; await send(); }
+async function send() {
+  const inp=document.getElementById('inp');
+  const q=inp.value.trim(); if(!q) return;
+  inp.value=''; inp.style.height='auto';
+  document.getElementById('sbtn').disabled=true;
+  addMsg('user',`<div class="bubble">${q.replace(/</g,'&lt;')}</div>`);
+  chatHistory.push({role:'user',content:q});
+  const hits=searchData(q);
+  let extra='';
+  if(hits.length) extra='\n\n[\ucee4\uc2a4\ud140 \uc124\uc815 \ub370\uc774\ud130 v'+chatVer+']:\n'+
+    hits.map(h=>`- [${h.v}] ${h.cat} > ${h.title}\n  \uacbd\ub85c: ${Array.isArray(h.path)?h.path.join(', '):h.path}\n  \ub0b4\uc6a9: ${h.opts||'\uc5c6\uc74c'}\n  \ud544\uc218: ${h.req}`).join('\n');
+  showTyping();
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`\ub2f9\uc2e0\uc740 Coursemos LXP(Moodle \uae30\ubc18) \uad00\ub9ac\uc790 \uc124\uc815 \uc804\ubb38\uac00\uc785\ub2c8\ub2e4.\n\uc120\ud0dd \ubc84\uc804: ${chatVer==='all'?'\uc804\uccb4(3.9, 4.5)':'v'+chatVer}\n\ub2f5\ubcc0 \uaddc\uce59:\n1. \ucee4\uc2a4\ud140 \uc124\uc815 \ub370\uc774\ud130\uac00 \uc788\uc73c\uba74 \uc6b0\uc120 \ud65c\uc6a9\ud558\uc5ec \uc815\ud655\ud55c \uacbd\ub85c\uc640 \uc635\uc158\uc744 \uc548\ub0b4\ud558\uc138\uc694.\n2. \ucee4\uc2a4\ud140 \ub370\uc774\ud130\uc5d0 \uc5c6\ub294 Moodle \uae30\ubcf8 \uae30\ub2a5\uc740 \uc77c\ubc18 Moodle \uc9c0\uc2dd\uc73c\ub85c \ub2f5\ubcc0\ud558\uc138\uc694.\n3. \uacbd\ub85c\ub294 /admin/... \ud615\uc2dd\uc73c\ub85c \uba85\ud655\ud788 \ud45c\uc2dc\ud558\uc138\uc694.\n4. \ud55c\uad6d\uc5b4\ub85c \uce5c\uc808\ud558\uace0 \uac04\uacb0\ud558\uac8c \ub2f5\ubcc0\ud558\uc138\uc694.\n5. \ucee4\uc2a4\ud140 \ub370\uc774\ud130 \uae30\ubc18 = "\u2705 \ucee4\uc2a4\ud140 \uc124\uc815", Moodle \uae30\ubcf8 \uc9c0\uc2dd = "\ud83d\udcd8 Moodle \uae30\ubcf8"\uc73c\ub85c \uad6c\ubd84\ud558\uc138\uc694.`,
+        messages:[...chatHistory.slice(-6,-1),{role:'user',content:q+extra}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'\ub2f5\ubcc0\uc744 \uac00\uc838\uc624\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.';
+    hideTyping();
+    chatHistory.push({role:'assistant',content:text});
+    const esc=text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    const cards=hits.length?'<div style="margin-top:8px">'+hits.map(card).join('')+`<span class="src-badge src-custom">\ud83d\udccb \ucee4\uc2a4\ud140 \uc124\uc815 \ub370\uc774\ud130 \uae30\ubc18</span></div>`:'<span class="src-badge src-ai" style="margin-top:6px;display:inline-flex">\ud83d\udcd8 Moodle \uae30\ubcf8 \uc9c0\uc2dd \uae30\ubc18</span>';
+    addMsg('bot',`<div class="bubble">${esc}${cards}</div>`);
+  } catch(e) {
+    hideTyping();
+    addMsg('bot','<div class="bubble">\uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694.</div>');
+  }
+  document.getElementById('sbtn').disabled=false;
+  document.getElementById('msgs').scrollTop=9999;
+}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+
+// Admin
+function populateCatFilter() {
+  const cats=['all',...new Set(DATA.map(d=>d.cat))];
+  const sel=document.getElementById('fcat');
+  sel.innerHTML=cats.map(c=>`<option value="${c}">${c==='all'?'\uc804\uccb4 \ucee4\ud14c\uace0\ub9ac':c}</option>`).join('');
+}
+function renderList() {
+  const q=document.getElementById('srch').value.toLowerCase();
+  const ver=document.getElementById('fver').value;
+  const cat=document.getElementById('fcat').value;
+  const filtered=DATA.filter(s=>{
+    if(ver!=='all'&&s.v!==ver) return false;
+    if(cat!=='all'&&s.cat!==cat) return false;
+    return !q||(s.title||'').toLowerCase().includes(q)||(s.cat||'').toLowerCase().includes(q)||(s.opts||'').toLowerCase().includes(q)||(typeof s.path==='string'?s.path:'').toLowerCase().includes(q);
+  });
+  const custom=DATA.filter(d=>!d.isBase);
+  document.getElementById('stat-row').innerHTML=
+    `<span class="stat">\uc804\uccb4 <b>${DATA.length}</b></span>
+     <span class="stat">\uac80\uc0c9 <b>${filtered.length}</b></span>
+     <span class="stat">\uc0ac\uc6a9\uc790 \ucd94\uac00 <b style="color:var(--accent)">${custom.length}</b></span>`;
+  const wrap=document.getElementById('list');
+  if(!filtered.length){
+    wrap.innerHTML='<div class="empty-state"><i class="ti ti-search-off"></i>\uac80\uc0c9 \uacb0\uacfc\uac00 \uc5c6\uc5b4\uc694</div>';
+    return;
+  }
+  wrap.innerHTML=filtered.map(item=>{
+    const p=Array.isArray(item.path)?item.path.join(', '):(item.path||'');
+    const isUrl=p.startsWith('/')||p.startsWith('http');
+    const tag=!item.isBase?`<span class="custom-tag">\ucd94\uac00\ub428</span>`:'';
+    return `<div class="list-item">
+      <div class="li-body">
+        <div class="li-meta">
+          <span class="rbadge req-${item.req}">${item.req}</span>
+          <span style="font-size:11px;font-weight:600;color:var(--accent)">v${item.v}</span>
+          <span style="font-size:11px;color:var(--text2)">${item.cat}</span>${tag}
+        </div>
+        <div class="li-title">${item.title}</div>
+        ${isUrl?`<div class="li-path">${p}</div>`:`<div style="font-size:11px;color:var(--text2);margin:2px 0">${p}</div>`}
+        ${item.opts?`<div class="li-opts">${item.opts}</div>`:''}
+      </div>
+      <div class="li-actions">
+        <button class="icon-btn" onclick="openModal('${item.id}')" title="\uc218\uc815"><i class="ti ti-edit"></i></button>
+        <button class="icon-btn del" onclick="delItem('${item.id}')" title="\uc0ad\uc81c"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(id) {
+  editingId=id||null;
+  document.getElementById('modal-ttl').textContent=id?'\uc124\uc815 \ud56d\ubaa9 \uc218\uc815':'\uc124\uc815 \ud56d\ubaa9 \ucd94\uac00';
+  const cats=[...new Set(DATA.map(d=>d.cat))];
+  document.getElementById('cat-dl').innerHTML=cats.map(c=>`<option value="${c}">`).join('');
+  if(id){
+    const it=DATA.find(d=>d.id===id);
+    if(it){
+      document.getElementById('f-v').value=it.v;
+      document.getElementById('f-req').value=it.req;
+      document.getElementById('f-cat').value=it.cat||'';
+      document.getElementById('f-title').value=it.title||'';
+      document.getElementById('f-path').value=Array.isArray(it.path)?it.path.join('\n'):(it.path||'');
+      document.getElementById('f-opts').value=it.opts||'';
+    }
+  } else {
+    document.getElementById('f-v').value='4.5';
+    document.getElementById('f-req').value='\ud544\uc218';
+    ['f-cat','f-title','f-path','f-opts'].forEach(id=>document.getElementById(id).value='');
+  }
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){document.getElementById('modal').style.display='none';editingId=null;}
+function closeBg(e){if(e.target===document.getElementById('modal'))closeModal();}
+function saveItem(){
+  const title=document.getElementById('f-title').value.trim();
+  const cat=document.getElementById('f-cat').value.trim();
+  if(!title||!cat){alert('\ucee4\ud14c\uace0\ub9ac\uc640 \uc81c\ubaa9\uc740 \ud544\uc218\uc785\ub2c8\ub2e4.');return;}
+  const item={
+    id:editingId||'c_'+Date.now(),
+    isBase:editingId?(DATA.find(d=>d.id===editingId)?.isBase||false):false,
+    v:document.getElementById('f-v').value,
+    req:document.getElementById('f-req').value,
+    cat,title,
+    path:document.getElementById('f-path').value.trim(),
+    opts:document.getElementById('f-opts').value.trim()||null
+  };
+  if(editingId){const i=DATA.findIndex(d=>d.id===editingId);if(i!==-1)DATA[i]=item;}
+  else DATA.unshift(item);
+  save(); closeModal(); populateCatFilter(); renderList();
+  toast(editingId?'\uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4':'\ud56d\ubaa9\uc774 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4');
+}
+function delItem(id){
+  if(!confirm('\uc774 \ud56d\ubaa9\uc744 \uc0ad\uc81c\ud560\uae4c\uc694?'))return;
+  DATA=DATA.filter(d=>d.id!==id); save(); renderList();
+  toast('\uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4');
+}
+function exportCSV(){
+  const h=['\ubc84\uc804','\ucee4\ud14c\uace0\ub9ac','\uc81c\ubaa9','\uacbd\ub85c','\ub0b4\uc6a9(\uc635\uc158)','\ud544\uc218 \uc5ec\ubd80'];
+  const rows=DATA.map(d=>[d.v,d.cat,d.title,Array.isArray(d.path)?d.path.join(', '):(d.path||''),d.opts||'',d.req]);
+  const csv=[h,...rows].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='moodle_settings_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); toast('CSV \ub2e4\uc6b4\ub85c\ub4dc \uc644\ub8cc');
+}
+</script>
+</body>
+</html>
