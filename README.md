@@ -1,1 +1,1 @@
-# Moodle_LMS_Setting
+# COUSEMOS_LMS_Setting
